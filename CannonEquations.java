@@ -8,7 +8,6 @@ public class CannonEquations {
     Double vi;
     Double m;
     Double x;
-    Double theta;
     Double tempC;
     Double tempK;
     Double rH;
@@ -17,25 +16,21 @@ public class CannonEquations {
     Double dew;
     Double dCo;
     Double crossA;
-    Double refa;
 
     // if a variable is missing input null
     public CannonEquations(
             Double velocityinitial,
             Double mass,
             Double deltax,
-            Double thetaAngle,
             Double temperature,
             Double relativeHumidity,
             Double airPressure,
             Double dragCoeffecient,
-            Double crossArea,
-            Double referenceArea) {
+            Double crossArea) {
 
         vi = velocityinitial;
         m = mass;
         x = deltax;
-        theta = thetaAngle;
         tempC = temperature;
         tempK = temperature + 273.15;
         rH = relativeHumidity;
@@ -44,36 +39,30 @@ public class CannonEquations {
         dew = (Math.log(rH / 100)) + ((17.62 * tempC) / (243.12 + tempC));
         dCo = dragCoeffecient;
         crossA = crossArea;
-        refA = referenceArea;
     }
 
-    public Double misssingAirDensity(Double aD) {
-        Double p1 = (6.1078 * 10) * ((7.5 * tempC) / (tempC + 237.3));
+    public Double missingAirDensity() {
+        Double p1 = (6.1078 * 10.0) * ((7.5 * tempC) / (tempC + 237.3));
         Double pv = p1 * rH;
         Double pd = hpa - pv;
-        aD = (pd / (287.058 * tempK)) + (pv / (461.495 * tempK));
-        return aD;
+        return ((pd / (287.058 * tempK)) + (pv / (461.495 * tempK)));
     }
 
-    public Double missingTerminalVelocity(Double crossA, Double tV, Double aD) {
-        double e = (2 * m * -9.81) / (aD * crossA * dCo);
-        tV = Math.sqrt(a);
-        return tV;
+    public Double missingTerminalVelocity(Double aD) {
+        Double e = (2 * m * 9.81) / (aD * crossA * dCo);
+        return Math.sqrt(e);
     }
 
-    public Double missingDragForce(Double aD, Double dF) {
-        dF = dCo * refA * ((aD * (vi * vi)) / 2);
-        return dF;
+    public Double missingDragForce(Double aD) {
+        return dCo * crossA * ((aD * (vi * vi)) / 2);
     }
 
-    public Double missingVelocityFinal(Double vf, Double time) {
-        vf = vi + (a * time);
-        return vf;
+    public Double missingVelocityFinal(Double time, Double a) {
+        return vi + (a * time);
     }
 
-    public Double missingAccelerationY(Double aD, Double tV, Double aya) {
-        aya = -9.81 - ((dCo * crossA * aD * tV * tV) / (2 * m));
-        return aya;
+    public Double missingAccelerationY(Double aD, Double tV) {
+        return -9.81 - ((dCo * crossA * aD * tV * tV) / (2 * m));
     }
 
     public Double missingU(Double u, Double tV, Double time, Double vix) {
@@ -81,27 +70,27 @@ public class CannonEquations {
         return u;
     }
 
-    public Double missingaccelerationX(Double u, Double axa, Double crossA, Double aD) {
-        axa = ((-1 * dCo) * crossA * aD * (u * u)) / (2 * m);
-        return axa;
+    public Double missingAccelerationX(Double u, Double aD) {
+        return ((-1 * dCo) * crossA * aD * (u * u)) / (2 * m);
     }
 
-    public void missingvy(Double viy) {
+    public Double missingviy(Double theta) {
         Double thetar = Math.toRadians(theta);
         Double thetas = Math.sin(thetar);
-        viy = thetas * vi;
+        return thetas * vi;
     }
 
-    public void missingvx(Double vix) {
+    public Double missingvix(Double theta) {
         Double thetar = Math.toRadians(theta);
         Double thetac = Math.cos(thetar);
-        vix = thetac * vi;
+        Double thetam = Math.toDegrees(thetac);
+        return thetac * vi;
     }
 
-    public Double missingTime(Double tV, Double time) {
-        Double te = Math.atan(vi / tV);
-        time = (tV / 9.81) * te;
-        return time;
+    public Double missingTime(Double tV, Double viy) {
+        Double te = Math.atan(viy / tV);
+        Double ter = Math.toDegrees(te);
+        return (tV / 9.81) * ter;
     }
 
     public Double missingx(Double vix, Double time, Double tV) {
@@ -113,39 +102,7 @@ public class CannonEquations {
 
     public Double missingTheta() {
         Double thetr = (Math.asin((9.81 * x) / (vi * vi)));
-        theta = 0.5 * (Math.toDegrees(thetr));
-        return theta;
-    }
-
-    public String toString(Double varReal) {
-        if (varReal == null) {
-            return "unknown";
-        }
-        if (varReal == vi) {
-            return varReal + "㎧";
-        }
-        if (varReal == vf) {
-            return varReal + "㎧";
-        }
-        if (varReal == a) {
-            return varReal + "㎧²";
-        }
-        if (varReal == m) {
-            return varReal + "kg";
-        }
-        if (varReal == x) {
-            return varReal + "m";
-        }
-        if (varReal == time) {
-            return varReal + "s";
-        }
-        if (varReal == theta) {
-            return varReal + "°";
-        }
-        if (varReal == aD) {
-            return varReal + "kg/m³";
-        } else
-            return "woops";
+        return 0.5 * (Math.toDegrees(thetr));
     }
 
     public static void writeFile(String real) {
