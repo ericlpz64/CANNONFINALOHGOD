@@ -44,7 +44,7 @@ public class CannonEquations {
     public Double missingAirDensity() {
         Double p1 = (6.1078 * 10.0) * ((7.5 * tempC) / (tempC + 237.3));
         Double pv = p1 * rH;
-        Double pd = hpa - pv;
+        Double pd = pa - pv;
         return ((pd / (287.058 * tempK)) + (pv / (461.495 * tempK)));
     }
 

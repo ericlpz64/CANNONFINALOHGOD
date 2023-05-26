@@ -1,17 +1,19 @@
+import dev.rablet.bme280.model.BME280Data;
 import java.util.Scanner;
 import java.util.ArrayList;
 
 class Main {
 
     public static void main(String[] args) {
+        BME280Data bme280 = new BME280Data(20.0, 20.0, 1480.00);
         Double vi = 27.0;
         Double m = 0.007;
         Double deltax = null;
         Double xTest = null;
         Double theta = null;
-        Double temp = 20.0;
-        Double rH = 18.0;
-        Double aP = 1480.0;
+        Double temp = bme280.getTemperature();;
+        Double rH = bme280.getHumidity();
+        Double hPa = bme280.getPressure();
         Double dCo = 0.67;
         Double crossA = 0.1963495408;
         Double tV = null;
@@ -35,12 +37,13 @@ class Main {
                     m /= 1000;
                 }
             }
-            System.out.print("Input Temperature in Celcius: ");
+            /*System.out.print("Input Temperature in Celcius: ");
             temp = isNull(sc.next());
             System.out.print("Input Relative Humidity: ");
             rH = isNull(sc.next());
             System.out.print("input Air Pressure in hPa: ");
-            aP = isNull(sc.next());
+            hPa = isNull(sc.next());
+            */
             System.out.print("Input Drag Coeffecient: ");
             dCo = isNull(sc.next());
             System.out.print("Input Cross-Sectional Area: ");
@@ -59,8 +62,8 @@ class Main {
         }
 
         CannonEquations Teracotta = new CannonEquations(
-                vi, m, deltax, temp, rH, aP, dCo, crossA);
-    //vi, m, delatx, temp, rH, aP, dCo, crossA
+                vi, m, deltax, temp, rH, hPa, dCo, crossA);
+    //vi, m, delatx, temp, rH, hPa, dCo, crossA
 
         while (gloop == 1.0) {
             aD = Teracotta.missingAirDensity();
